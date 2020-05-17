@@ -14,13 +14,16 @@ export class Server {
     wsServer: ws.Server
     address?: string
     port?: number
+    url?: string
 
     constructor(extension: Extension) {
         this.extension = extension
+        this.url = configuration.get('viewer.pdf.internal.url') as string
         this.httpServer = http.createServer((request, response) => this.handler(request, response))
         const configuration = vscode.workspace.getConfiguration('latex-workshop')
         const viewerPort = configuration.get('viewer.pdf.internal.port') as number
-        this.httpServer.listen(viewerPort, '127.0.0.1', undefined, () => {
+        const viewerHost = configuration.get('viewer.pdf.internal.host') as string
+        this.httpServer.listen(viewerPort, viewerHost, undefined, () => {
             const {address, port} = this.httpServer.address() as AddressInfo
             this.port = port
             if (address.includes(':')) {
