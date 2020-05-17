@@ -20,11 +20,12 @@ export class Server {
         this.extension = extension
         this.httpServer = http.createServer((request, response) => this.handler(request, response))
         const configuration = vscode.workspace.getConfiguration('latex-workshop')
-        var viewerPort = configuration.get('viewer.pdf.internal.port') as number
-        const viewerBindPort = configuration.get('viewer.pdf.internal.bindport') as number
-        if (viewerBindPort !== undefined) {
-            viewerPort = viewerBindPort
+        const viewerPort = configuration.get('viewer.pdf.internal.port') as number
+        var viewerBindPort = configuration.get('viewer.pdf.internal.bindport') as number
+        if (viewerBindPort === undefined) {
+            viewerBindPort = viewerPort
         }
+        
         this.url = configuration.get('viewer.pdf.internal.url') as string
         if (this.url === undefined) {
             this.url = "http://localhost"
@@ -33,9 +34,14 @@ export class Server {
         if (viewerHost === undefined) {
             viewerHost = "127.0.0.1"
         }
-        this.httpServer.listen(viewerPort, viewerHost, undefined, () => {
+        this.httpServer.listen(viewerBindPort, viewerHost, undefined, () => {
             const {address, port} = this.httpServer.address() as AddressInfo
             this.port = port
+            // override view port for deploying behind a proxy
+            if (viewerPort !== undefined) {
+                this.port = viewerPort
+                this.extension.logger.addLogMessage(`switching external port to ${this.port}`)
+            }
             if (address.includes(':')) {
                 // the colon is reserved in URL to separate IPv4 address from port number. IPv6 address needs to be enclosed in square brackets when used in URL
                 this.address = `[${address}]:${port}`
