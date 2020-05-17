@@ -23,7 +23,6 @@ export class Server {
         var viewerPort = configuration.get('viewer.pdf.internal.port') as number
         const viewerBindPort = configuration.get('viewer.pdf.internal.bindport') as number
         if (viewerBindPort !== undefined) {
-        } else {
             viewerPort = viewerBindPort
         }
         this.url = configuration.get('viewer.pdf.internal.url') as string
