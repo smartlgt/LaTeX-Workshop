@@ -19,10 +19,16 @@ export class Server {
     constructor(extension: Extension) {
         this.extension = extension
         this.url = configuration.get('viewer.pdf.internal.url') as string
+        if (this.url === undefined) {
+            this.url = "http://localhost"
+        }
         this.httpServer = http.createServer((request, response) => this.handler(request, response))
         const configuration = vscode.workspace.getConfiguration('latex-workshop')
         const viewerPort = configuration.get('viewer.pdf.internal.port') as number
-        const viewerHost = configuration.get('viewer.pdf.internal.host') as string
+        var viewerHost = configuration.get('viewer.pdf.internal.host') as string
+        if (viewerHost === undefined) {
+            viewerHost = "127.0.0.1"
+        }
         this.httpServer.listen(viewerPort, viewerHost, undefined, () => {
             const {address, port} = this.httpServer.address() as AddressInfo
             this.port = port
