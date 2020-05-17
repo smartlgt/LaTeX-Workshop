@@ -22,7 +22,7 @@ export class Server {
         const configuration = vscode.workspace.getConfiguration('latex-workshop')
         var viewerPort = configuration.get('viewer.pdf.internal.port') as number
         const viewerBindPort = configuration.get('viewer.pdf.internal.bindport') as number
-        if (viewerBindPort !== undefinded) {
+        if (viewerBindPort !== undefined) {
         } else {
             viewerPort = viewerBindPort
         }
