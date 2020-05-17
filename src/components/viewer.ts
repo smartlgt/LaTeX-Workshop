@@ -156,7 +156,7 @@ export class Viewer {
             this.extension.logger.addLogMessage('Cannot establish server connection.')
             return
         }
-        const url = `http://localhost:${this.extension.server.port}/viewer.html?file=${encodePathWithPrefix(pdfFile)}`
+        const url = `${this.extension.server.url}:${this.extension.server.port}/viewer.html?file=${encodePathWithPrefix(pdfFile)}`
         this.extension.logger.addLogMessage(`Serving PDF file at ${url}`)
         this.extension.logger.addLogMessage(`The encoded path is ${pdfFile}`)
         return url
@@ -258,10 +258,10 @@ export class Viewer {
 
     getPDFViewerContent(pdfFile: string): string {
         // viewer/viewer.js automatically requests the file to server.ts, and server.ts decodes the encoded path of PDF file.
-        const url = `http://localhost:${this.extension.server.port}/viewer.html?incode=1&file=${encodePathWithPrefix(pdfFile)}`
+        const url = `${this.extension.server.url}:${this.extension.server.port}/viewer.html?incode=1&file=${encodePathWithPrefix(pdfFile)}`
         const rebroadcast: boolean = this.getKeyboardEventConfig()
         return `
-            <!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src http://localhost:* http://127.0.0.1:*; script-src 'unsafe-inline'; style-src 'unsafe-inline';"></head>
+            <!DOCTYPE html><html><head><meta http-equiv="Content-Security-Policy" content="default-src http://localhost:* http://127.0.0.1:* ${this.extension.server.url}:*; script-src 'unsafe-inline'; style-src 'unsafe-inline';"></head>
             <body><iframe id="preview-panel" class="preview-panel" src="${url}" style="position:absolute; border: none; left: 0; top: 0; width: 100%; height: 100%;">
             </iframe>
             <script>
@@ -282,7 +282,7 @@ export class Viewer {
             // we have to dispatch keyboard events in the parent window.
             // See https://github.com/microsoft/vscode/issues/65452#issuecomment-586036474
             window.addEventListener('message', (e) => {
-                if (e.origin !== 'http://localhost:${this.extension.server.port}') {
+                if (e.origin !== '${this.extension.server.url}:${this.extension.server.port}') {
                     return;
                 }
                 switch (e.data.type) {
