@@ -1102,6 +1102,21 @@
           "default": "0",
           "markdownDescription": "Define the port to listen on for communicating with the internal viewer. The default value \"0\" means the port is chosen randomly by the application."
         },
+        "latex-workshop.viewer.pdf.internal.host": {
+          "type": ["string","null"], 
+          "default": null,
+          "markdownDescription": "Define the host ip to  bind for the viewer and websocket server. This defaults to \"127.0.0.1\""
+        },
+        "latex-workshop.viewer.pdf.internal.bindport": {
+          "type": ["number","null"], 
+          "default": null,
+          "markdownDescription": "Define an internal port to bind the viewer and websocket server to. Usful if you provide a port mapping or proxy for accessing the servers. This defaults to the value of port."
+        },
+        "latex-workshop.viewer.pdf.internal.url": {
+          "type": ["string","null"], 
+          "default": null,
+          "markdownDescription": "Define the exposed url (including the schema) for a client to connect to the viewer and websocket server. This defaults to \"http://localhost\"."
+        },
         "latex-workshop.view.pdf.internal.synctex.keybinding": {
           "type": "string",
           "default": "ctrl-click",
